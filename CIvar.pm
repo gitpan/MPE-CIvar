@@ -29,7 +29,7 @@ findjcw getjcw putjcw setjcw
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw( );
-our $VERSION = '1.01';
+our $VERSION = '1.02';
 
 bootstrap MPE::CIvar $VERSION;
 
@@ -68,7 +68,7 @@ sub EXISTS {
 1;
 __END__
 
-=head1 MPE::CIvar
+=head1 NAME
 
 MPE::CIvar - Perl extension for CI variables and JCWs on MPE/ix
 
