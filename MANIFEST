@@ -1,0 +1,7 @@
+CIvar.pm
+CIvar.xs
+INSTALL
+MANIFEST
+Makefile.PL
+README
+t/test.t
