@@ -30,21 +30,22 @@ findjcw getjcw putjcw setjcw
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw( );
-our $VERSION = '1.1';
+our $VERSION = '1.11';
 
 our $lastcmd;
-our $cierr;
+our $parmnum;
+our $cmderr;
 our $msglevel = 0;
 
 bootstrap MPE::CIvar $VERSION;
 
 sub hpcicmds {
-  my $cierr=0;
+  $cmderr=0;
   for my $cmd (@_) {
-    $MPE::CIvar::lastcmd = $cmd;
-    last if hpcicommand($cmd, $cierr, undef, $msglevel)>0;
+    $lastcmd = $cmd;
+    last if hpcicommand($cmd, $cmderr, $parmnum, $msglevel)>0;
   }
-  return !$cierr;
+  return !$cmderr;
 }
 
 sub TIEHASH {
@@ -203,7 +204,7 @@ processing the list on an error, but not a warning.  You can set
 the C<msglevel> (see above) by assigning to C<$MPE::CIvar::msglevel>
 before calling C<hpcicmds>.  You can see the last command 
 executed by looking at C<$MPE::CIvar::lastcmd> and any error in
-C<$MPE::CIvar::cierr>.
+C<$MPE::CIvar::cmderr>.
 
 
 =back
