@@ -3,3 +3,8 @@ Revision history for Perl extension MPE::CIvar.
 1.01  Thu Nov  4 20:22:19 2001
 	- Added EXISTS function
 
+1.02  Thu Nov 4
+       - Fixed Pod documenation
+
+1.1   Thu Nov 15 2001
+       - Added hpcicmds()

@@ -20,19 +20,32 @@ tie %CIVAR, 'MPE::CIvar';
 our %EXPORT_TAGS = ( 'all' => [ qw(
 hpcigetvar hpciputvar hpcideletevar
 %CIVAR
-hpcicommand
+hpcicommand hpcicmds
 findjcw getjcw putjcw setjcw
 ) ],
 'varcalls' => [ qw(hpcigetvar hpciputvar hpcideletevar) ],
-'jcwcalls' => [ qw(findjcw getjcw putjcw setjcw) ]);
+'jcwcalls' => [ qw(findjcw getjcw putjcw setjcw) ],
+'cmdcalls' => [ qw(hpcicommand hpcicmds) ]);
 
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw( );
-our $VERSION = '1.02';
+our $VERSION = '1.1';
+
+our $lastcmd;
+our $cierr;
+our $msglevel = 0;
 
 bootstrap MPE::CIvar $VERSION;
 
+sub hpcicmds {
+  my $cierr=0;
+  for my $cmd (@_) {
+    $MPE::CIvar::lastcmd = $cmd;
+    last if hpcicommand($cmd, $cierr, undef, $msglevel)>0;
+  }
+  return !$cierr;
+}
 
 sub TIEHASH {
   my $class = shift;
@@ -93,6 +106,12 @@ MPE::CIvar - Perl extension for CI variables and JCWs on MPE/ix
   if ($CIVAR{HPCIERR}) {
     print "Error message: $CIVAR{HPCIERRMSG}\n";
   }
+
+  hpcicmds("purge larry", 
+           "build larry;rec=-80,,f,ascii",
+           "file input=larry,old",
+           "run darryl.pub")
+    or die "Error on cmd: '$MPE::CIvar::lastcmd': $CIVAR{HPCIERRMSG}\n";
 
   $CIVAR{HPPATH} .= ",PERL.PUB";  # append PERL.PUB to HPPATH
 
@@ -169,13 +188,23 @@ A hash tied to the CI variables.  The follow are equivalent:
 
 =item hpcicommand($command [, $cmderr [, $parmnum [,$msglevel]]])
 
-Calls hpcicommand with the command string.  The other arguments are
-optional.  A value of 0 will be returned on success, otherwise an error
+Calls intrinsic C<HPCICOMMAND> with the command string.  The other arguments
+are optional.  A value of 0 will be returned on success, otherwise an error
 value will be returned and assigned to $cmderr if a variable is passed
 as the second argument.  You can set $msglevel to 1 to suppress warnings
 and set it to 2 to suppress errors as well as warnings.  For example,
 
    hpcicommand($command, undef, undef, 2);
+
+=item hpcicmds( @cmdlist )
+
+Calls C<hpcicommand> for each string in C<@cmdlist>.  It will stop
+processing the list on an error, but not a warning.  You can set
+the C<msglevel> (see above) by assigning to C<$MPE::CIvar::msglevel>
+before calling C<hpcicmds>.  You can see the last command 
+executed by looking at C<$MPE::CIvar::lastcmd> and any error in
+C<$MPE::CIvar::cierr>.
+
 
 =back
 
