@@ -29,7 +29,7 @@ findjcw getjcw putjcw setjcw
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw( );
-our $VERSION = '1.0';
+our $VERSION = '1.01';
 
 bootstrap MPE::CIvar $VERSION;
 
@@ -58,6 +58,12 @@ sub FETCH {
   return hpcigetvar($key);
 }
 
+# thanks to Ted Ashton for this:
+sub EXISTS {
+  my $self   = shift;
+  my $key    = shift;
+  return defined(hpcigetvar($key));
+}
 
 1;
 __END__

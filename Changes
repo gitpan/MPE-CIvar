@@ -1,0 +1,5 @@
+Revision history for Perl extension MPE::CIvar.
+
+1.01  Thu Nov  4 20:22:19 2001
+	- Added EXISTS function
+
